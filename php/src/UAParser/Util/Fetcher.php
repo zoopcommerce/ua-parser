@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ua-parser
  *
@@ -6,40 +7,29 @@
  *
  * Released under the MIT license
  */
+
 namespace UAParser\Util;
 
 use UAParser\Exception\FetcherException;
 
 class Fetcher
 {
-    private $resourceUri = 'https://raw.github.com/tobie/ua-parser/master/regexes.yaml';
+    const RESOURCE_FILE = 'regexes.yaml';
+
+    private $resourceUri;
 
     /** @var resource */
     private $streamContext;
 
-    public function __construct($streamContext = null)
+    public function __construct()
     {
-        if (is_resource($streamContext) && get_resource_type($streamContext) === 'stream-context') {
-            $this->streamContext = $streamContext;
-        } else {
-            $this->streamContext = stream_context_create(
-                array(
-                    'ssl' => array(
-                        'verify_peer'         => true,
-                        'verify_depth'        => 5,
-                        'cafile'              => __DIR__ . '/../../../resources/ca-bundle.crt',
-                        'CN_match'            => 'raw.github.com',
-                        'disable_compression' => true,
-                    )
-                )
-            );
-        }
+        $this->resourceUri = __DIR__ . '/../../../../' . self::RESOURCE_FILE;
     }
 
     public function fetch()
     {
         $level = error_reporting(0);
-        $result = file_get_contents($this->resourceUri, null, $this->streamContext);
+        $result = file_get_contents($this->resourceUri);
         error_reporting($level);
 
         if ($result === false) {
