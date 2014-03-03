@@ -18,9 +18,6 @@ class Fetcher
 
     private $resourceUri;
 
-    /** @var resource */
-    private $streamContext;
-
     public function __construct()
     {
         $this->resourceUri = __DIR__ . '/../../../../' . self::RESOURCE_FILE;
